@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/', UserController.createNewUser);
 
 //Read - POST
-// router.post('/search', UserController.viewUserByName);
+router.post('/search', UserController.viewUserByName);
 
 // READ - GET
 router.get('/', UserController.getAllUsers);
@@ -19,7 +19,7 @@ router.get('/:id', UserController.getUserById);
 //UPDATE - PATCH
 router.patch('/:idUser', UserController.updateUser);
 
-//DELETE - DELETE 
-router.delete('/:idUser', UserController.deleteUser );
+//DELETE - DELETE
+router.delete('/:idUser', UserController.deleteUser);
 
 module.exports = router;
