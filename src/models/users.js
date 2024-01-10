@@ -1,7 +1,7 @@
 const dbPool = require('../config/databases');
 
 const getAllUsers = (body) => {
-  const SQLQuery = `SELECT * FROM TOFLMB where stsrec='A'`;
+  const SQLQuery = `SELECT TOP 1000 * FROM TOFLMB where stsrec='A' ORDER BY nocif`;
 
   return dbPool.query(SQLQuery);
 };
@@ -22,11 +22,36 @@ const createNewUser = (body) => {
 };
 
 const viewUserByName = (body) => {
-  const SQLQuery = `   SELECT TOFLMB.nokontrak, TOFLMB.acdrop, TOFLMB.nama, mCIF.alamat, TOFLMB.kdprd, TOflmb.kdaoh, TOFLMB.frekmdl,
-		TOFLMB.mdlawal,TOFLMB.mgnawal, TOFLMB.angsmdl, TOFLMB.angsmgn, TOFLMB.osmdlc, TOFLMB.osmgnc, TOFLMB.colbaru,TOFLMB.kdcab
-		FROM TOFLMB INNER JOIN mCif ON TOFLMB.nocif=mCif.nocif
-		WHERE TOFLMB.nokontrak LIKE '%${body.nama}%'
-        OR TOFLMB.nama LIKE '%${body.nama}%'   `;
+  const SQLQuery = `    SELECT
+  TOP 1 TOFRS.stsbyr,
+  TOFRS.tgltagih,
+  TOFLMB.tglakad,
+  TOFLMB.nokontrak,
+  TOFLMB.acdrop,
+  TOFLMB.nama,
+  mCIF.alamat,
+  TOFLMB.kdprd,
+  TOFLMB.kdaoh,
+  TOFLMB.frekmdl,
+  TOFLMB.mdlawal,
+  TOFLMB.mgnawal,
+  TOFLMB.angsmdl,
+  TOFLMB.angsmgn,
+  TOFLMB.osmdlc,
+  TOFLMB.osmgnc,
+  TOFLMB.colbaru,
+  TOFLMB.kdcab
+FROM
+  TOFLMB
+LEFT JOIN
+  mCIF ON TOFLMB.nocif = mCIF.nocif
+RIGHT JOIN
+  TOFRS ON TOFLMB.nokontrak = TOFRS.nokontrak
+WHERE
+  (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '%${body.nama}%') AND TOFLMB.stsrec = 'A' AND TOFRS.stsbyr = ''
+ORDER BY
+  TOFLMB.tglakad DESC
+`;
 
   return dbPool.query(SQLQuery).then((result) => result.recordset);
 };
