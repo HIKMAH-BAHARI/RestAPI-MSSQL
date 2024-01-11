@@ -24,7 +24,9 @@ const getAllColl = (body) => {
 			( TOFLMB.colbaru = '2' ) AND
 			( TOFLMB.stsrec IN ('A', 'N')) AND
 			( TOFLMB.pokpby NOT IN ('12','30','18')) AND
-			( TOFLMB.stsacc NOT IN ('W','C')) AND stsrest <> 'Y' `;
+			( TOFLMB.stsacc NOT IN ('W','C')) AND stsrest <> 'Y'
+	ORDER BY TOFLMB.kdaoh 
+	 `;
 
   return dbPool.query(SQLQuery);
 };
@@ -32,7 +34,7 @@ const getAllColl = (body) => {
 const getOsColl = (body) => {
   const SQLQuery = `  SELECT TOFLMB.kdloc, TOFLMB.colbaru, SUM(osmdlc) AS tot_osmdlc, Count(*) AS tot_rec FROM TOFLMB 
 		WHERE ( stsrec IN ('A','N')) AND pokpby NOT IN ('12','30','18') AND stsacc NOT IN ('W','C') AND ststrn = '*' 
-		GROUP BY TOFLMB.kdloc,TOFLMB.colbaru ORDER BY TOFLMB.kdloc ASC, TOFLMB.colbaru ASC	`;
+		GROUP BY TOFLMB.kdloc,TOFLMB.colbaru ORDER BY TOFLMB.kdloc ASC, TOFLMB.colbaru ASC	`;
 
   return dbPool.query(SQLQuery);
 };
