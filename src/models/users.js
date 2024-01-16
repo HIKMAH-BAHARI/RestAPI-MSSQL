@@ -1,7 +1,7 @@
 const dbPool = require('../config/databases');
 
 const getAllUsers = (body) => {
-  const SQLQuery = `SELECT TOP 1000 * FROM TOFLMB where stsrec='A' ORDER BY nocif`;
+  const SQLQuery = `SELECT nocif, nama, nokontrak FROM TOFLMB WHERE stsrec='A' ORDER BY nama`;
 
   return dbPool.query(SQLQuery);
 };
@@ -30,6 +30,39 @@ const viewUserByName = (body) => {
   TOFLMB.acdrop,
   TOFLMB.nama,
   mCIF.alamat,
+  mCIF.hp,
+  TOFLMB.kdprd,
+  TOFLMB.kdaoh,
+  TOFLMB.frekmdl,
+  TOFLMB.mdlawal,
+  TOFLMB.mgnawal,
+  TOFLMB.angsmdl,
+  TOFLMB.angsmgn,
+  SUM(angsmdl + angsmgn) as angsttl,
+  TOFLMB.osmdlc,
+  TOFLMB.osmgnc,
+  TOFTABB.sahirrp,
+  TOFLMB.colbaru,
+  TOFLMB.kdcab
+FROM
+  TOFLMB
+LEFT JOIN
+  mCIF ON TOFLMB.nocif = mCIF.nocif
+RIGHT JOIN
+  TOFRS ON TOFLMB.nokontrak = TOFRS.nokontrak
+LEFT JOIN
+  TOFTABB ON TOFLMB.acdrop = TOFTABB.notab
+WHERE
+  (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A' AND TOFRS.stsbyr = ''
+GROUP BY
+  TOFRS.stsbyr,
+  TOFRS.tgltagih,
+  TOFLMB.tglakad,
+  TOFLMB.nokontrak,
+  TOFLMB.acdrop,
+  TOFLMB.nama,
+  mCIF.alamat,
+  mCIF.hp,
   TOFLMB.kdprd,
   TOFLMB.kdaoh,
   TOFLMB.frekmdl,
@@ -39,16 +72,9 @@ const viewUserByName = (body) => {
   TOFLMB.angsmgn,
   TOFLMB.osmdlc,
   TOFLMB.osmgnc,
+  TOFTABB.sahirrp,
   TOFLMB.colbaru,
   TOFLMB.kdcab
-FROM
-  TOFLMB
-LEFT JOIN
-  mCIF ON TOFLMB.nocif = mCIF.nocif
-RIGHT JOIN
-  TOFRS ON TOFLMB.nokontrak = TOFRS.nokontrak
-WHERE
-  (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '%${body.nama}%') AND TOFLMB.stsrec = 'A' AND TOFRS.stsbyr = ''
 ORDER BY
   TOFLMB.tglakad DESC
 `;
