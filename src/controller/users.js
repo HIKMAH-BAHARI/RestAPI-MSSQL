@@ -6,7 +6,6 @@ const getAllUsers = async (req, res) => {
     const { recordset } = await UserModel.getAllUsers();
 
     res.json({
-      message: 'GET all users success',
       data: recordset,
     });
   } catch (error) {
