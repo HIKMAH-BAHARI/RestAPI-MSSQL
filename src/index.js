@@ -9,6 +9,15 @@ const middlewareLogRequest = require('./middleware/logs');
 const upload = require('./middleware/multer');
 
 const app = express();
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Ganti '*' dengan asal yang diizinkan di lingkungan produksi
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
+});
 
 app.use(middlewareLogRequest);
 app.use(express.json());

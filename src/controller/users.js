@@ -1,4 +1,5 @@
 const UserModel = require('../models/users');
+const bcrypt = require('bcrypt');
 
 const getAllUsers = async (req, res) => {
   try {
@@ -41,26 +42,40 @@ const getUserById = async (req, res) => {
 };
 
 const createNewUser = async (req, res) => {
-  console.log(req.body);
-  const { body } = req;
+  const { email, password, nama } = req.body;
 
-  if (!body.email || !body.name || !body.address) {
+  if (!email || !password || !nama) {
     return res.status(400).json({
-      message: 'Anda mengirimkan data tidak valdi',
+      message: 'Anda mengirimkan data tidak valid',
       data: null,
     });
   }
 
   try {
-    await UserModel.createNewUser(body);
+    const existingUser = await UserModel.getUserByEmail(email);
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: 'Email Sudah Terdaftar',
+        data: null,
+      });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const userData = {
+      email,
+      password: hashedPassword,
+      nama,
+    };
+    await UserModel.createNewUser(userData);
     res.status(201).json({
-      message: 'Create new users succes',
-      data: body,
+      message: 'Create new user success',
+      data: userData,
     });
   } catch (error) {
+    console.error('Error creating new user:', error.message);
     res.status(500).json({
       message: 'Server Error',
-      serverMessage: error,
+      serverMessage: error.message,
     });
   }
 };

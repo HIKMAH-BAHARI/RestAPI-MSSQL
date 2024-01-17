@@ -1,4 +1,6 @@
 const dbPool = require('../config/databases');
+const dbPoolLogin = require('../config/databaseUser');
+const mssql = require('mssql');
 
 const getAllUsers = (body) => {
   const SQLQuery = `SELECT TOP 1000 * FROM TOFLMB where stsrec='A' ORDER BY nocif`;
@@ -13,12 +15,30 @@ const getUserById = (userId) => {
     .then((result) => result.recordset); // Mengambil hanya bagian recordset
 };
 
+const getUserByEmail = async (email) => {
+  const SQLQuery = `SELECT email FROM tb_user WHERE email = @email`;
+
+  const request = dbPoolLogin.request();
+  request.input('email', mssql.VarChar, email);
+
+  const result = await request.query(SQLQuery);
+
+  // Mengembalikan data pengguna jika ditemukan, atau null jika tidak ditemukan
+  return result.recordset.length > 0 ? result.recordset[0] : null;
+};
+
 /* Data didapatkan dari request body */
 const createNewUser = (body) => {
-  const SQLQuery = `   INSERT INTO users (name, address, email)
-                    VALUES ('${body.name}', '${body.address}', '${body.email}')`;
+  const SQLQuery = `
+    INSERT INTO tb_user (email, password, nama)
+    VALUES (@email, @password, @nama)`;
 
-  return dbPool.query(SQLQuery);
+  const request = dbPoolLogin.request();
+  request.input('email', mssql.VarChar, body.email); // Menggunakan body.email
+  request.input('password', mssql.VarChar, body.password); // Menggunakan body.password
+  request.input('nama', mssql.VarChar, body.nama); // Menggunakan body.nama
+
+  return request.query(SQLQuery);
 };
 
 const viewUserByName = (body) => {
@@ -73,6 +93,7 @@ const deleteUser = (idUser) => {
 module.exports = {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   createNewUser,
   viewUserByName,
   updateUser,
