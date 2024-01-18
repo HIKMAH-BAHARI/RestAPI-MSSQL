@@ -8,10 +8,10 @@ const router = express.Router();
 router.post('/', UserController.createNewUser);
 
 //Read - POST
-router.post('/search', UserController.viewUserByName);
+//router.post('/search', UserController.viewUserByName);
 
 // READ - GET
-router.get('/', UserController.getAllUsers);
+//router.get('/', UserController.getAllUsers);
 
 // READ - GET by ID
 router.get('/:id', UserController.getUserById);

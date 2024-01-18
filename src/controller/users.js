@@ -1,20 +1,20 @@
 const UserModel = require('../models/users');
 const bcrypt = require('bcrypt');
 
-const getAllUsers = async (req, res) => {
-  try {
-    const { recordset } = await UserModel.getAllUsers();
+// const getAllUsers = async (req, res) => {
+//   try {
+//     const { recordset } = await UserModel.getAllUsers();
 
-    res.json({
-      data: recordset,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Server Error',
-      serverMessage: error,
-    });
-  }
-};
+//     res.json({
+//       data: recordset,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       message: 'Server Error',
+//       serverMessage: error,
+//     });
+//   }
+// };
 
 const getUserById = async (req, res) => {
   try {
@@ -79,24 +79,25 @@ const createNewUser = async (req, res) => {
   }
 };
 
-const viewUserByName = async (req, res) => {
-  console.log(req.body);
-  const { body } = req;
-  const user = await UserModel.viewUserByName(body);
+// * DIPINDAH KE CUSTOMERS
+// const viewUserByName = async (req, res) => {
+//   console.log(req.body);
+//   const { body } = req;
+//   const user = await UserModel.viewUserByName(body);
 
-  try {
-    await UserModel.viewUserByName(body);
-    res.status(201).json({
-      message: 'Pencarian data sukses',
-      data: user,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Server Error',
-      serverMessage: error,
-    });
-  }
-};
+//   try {
+//     await UserModel.viewUserByName(body);
+//     res.status(201).json({
+//       message: 'Pencarian data sukses',
+//       data: user,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       message: 'Server Error',
+//       serverMessage: error,
+//     });
+//   }
+// };
 
 const updateUser = async (req, res) => {
   const { idUser } = req.params;
@@ -135,10 +136,10 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  getAllUsers,
+  //getAllUsers,
   getUserById,
   createNewUser,
-  viewUserByName,
+  //viewUserByName,
   updateUser,
   deleteUser,
 };

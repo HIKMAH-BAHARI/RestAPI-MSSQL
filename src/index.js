@@ -4,6 +4,7 @@ const express = require('express');
 
 const usersRouters = require('./routes/users');
 const collsRouters = require('./routes/colls');
+const customersRouters = require('./routes/customers');
 
 const middlewareLogRequest = require('./middleware/logs');
 const upload = require('./middleware/multer');
@@ -26,13 +27,14 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use(middlewareLogRequest);
 app.use(express.json());
 app.use('/assets', express.static('public/images'));
 
 app.use('/users', usersRouters);
 app.use('/colls', collsRouters);
+app.use('/customers', customersRouters);
+
 app.post('/upload', upload.single('photo'), (req, res) => {
   res.json({
     message: 'Upload berhasil',

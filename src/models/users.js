@@ -41,66 +41,67 @@ const createNewUser = (body) => {
   return request.query(SQLQuery);
 };
 
-const viewUserByName = (body) => {
-  const SQLQuery = `    SELECT
-  TOP 1 TOFRS.stsbyr,
-  TOFRS.tgltagih,
-  TOFLMB.tglakad,
-  TOFLMB.nokontrak,
-  TOFLMB.acdrop,
-  TOFLMB.nama,
-  mCIF.alamat,
-  mCIF.hp,
-  TOFLMB.kdprd,
-  TOFLMB.kdaoh,
-  TOFLMB.frekmdl,
-  TOFLMB.mdlawal,
-  TOFLMB.mgnawal,
-  TOFLMB.angsmdl,
-  TOFLMB.angsmgn,
-  SUM(angsmdl + angsmgn) as angsttl,
-  TOFLMB.osmdlc,
-  TOFLMB.osmgnc,
-  TOFTABB.sahirrp,
-  TOFLMB.colbaru,
-  TOFLMB.kdcab
-FROM
-  TOFLMB
-LEFT JOIN
-  mCIF ON TOFLMB.nocif = mCIF.nocif
-RIGHT JOIN
-  TOFRS ON TOFLMB.nokontrak = TOFRS.nokontrak
-LEFT JOIN
-  TOFTABB ON TOFLMB.acdrop = TOFTABB.notab
-WHERE
-  (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A' AND TOFRS.stsbyr = ''
-GROUP BY
-  TOFRS.stsbyr,
-  TOFRS.tgltagih,
-  TOFLMB.tglakad,
-  TOFLMB.nokontrak,
-  TOFLMB.acdrop,
-  TOFLMB.nama,
-  mCIF.alamat,
-  mCIF.hp,
-  TOFLMB.kdprd,
-  TOFLMB.kdaoh,
-  TOFLMB.frekmdl,
-  TOFLMB.mdlawal,
-  TOFLMB.mgnawal,
-  TOFLMB.angsmdl,
-  TOFLMB.angsmgn,
-  TOFLMB.osmdlc,
-  TOFLMB.osmgnc,
-  TOFTABB.sahirrp,
-  TOFLMB.colbaru,
-  TOFLMB.kdcab
-ORDER BY
-  TOFLMB.tglakad DESC
-`;
+// -- DIPINDAH KE CUSTOMERS
+// const viewUserByName = (body) => {
+//   const SQLQuery = `    SELECT
+//   TOP 1 TOFRS.stsbyr,
+//   TOFRS.tgltagih,
+//   TOFLMB.tglakad,
+//   TOFLMB.nokontrak,
+//   TOFLMB.acdrop,
+//   TOFLMB.nama,
+//   mCIF.alamat,
+//   mCIF.hp,
+//   TOFLMB.kdprd,
+//   TOFLMB.kdaoh,
+//   TOFLMB.frekmdl,
+//   TOFLMB.mdlawal,
+//   TOFLMB.mgnawal,
+//   TOFLMB.angsmdl,
+//   TOFLMB.angsmgn,
+//   SUM(angsmdl + angsmgn) as angsttl,
+//   TOFLMB.osmdlc,
+//   TOFLMB.osmgnc,
+//   TOFTABB.sahirrp,
+//   TOFLMB.colbaru,
+//   TOFLMB.kdcab
+// FROM
+//   TOFLMB
+// LEFT JOIN
+//   mCIF ON TOFLMB.nocif = mCIF.nocif
+// RIGHT JOIN
+//   TOFRS ON TOFLMB.nokontrak = TOFRS.nokontrak
+// LEFT JOIN
+//   TOFTABB ON TOFLMB.acdrop = TOFTABB.notab
+// WHERE
+//   (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A' AND TOFRS.stsbyr = ''
+// GROUP BY
+//   TOFRS.stsbyr,
+//   TOFRS.tgltagih,
+//   TOFLMB.tglakad,
+//   TOFLMB.nokontrak,
+//   TOFLMB.acdrop,
+//   TOFLMB.nama,
+//   mCIF.alamat,
+//   mCIF.hp,
+//   TOFLMB.kdprd,
+//   TOFLMB.kdaoh,
+//   TOFLMB.frekmdl,
+//   TOFLMB.mdlawal,
+//   TOFLMB.mgnawal,
+//   TOFLMB.angsmdl,
+//   TOFLMB.angsmgn,
+//   TOFLMB.osmdlc,
+//   TOFLMB.osmgnc,
+//   TOFTABB.sahirrp,
+//   TOFLMB.colbaru,
+//   TOFLMB.kdcab
+// ORDER BY
+//   TOFLMB.tglakad DESC
+// `;
 
-  return dbPool.query(SQLQuery).then((result) => result.recordset);
-};
+//   return dbPool.query(SQLQuery).then((result) => result.recordset);
+// };
 
 const updateUser = (body, idUser) => {
   const SQLQuery = `   UPDATE TOFDEP
@@ -121,7 +122,7 @@ module.exports = {
   getUserById,
   getUserByEmail,
   createNewUser,
-  viewUserByName,
+  //viewUserByName,
   updateUser,
   deleteUser,
 };
