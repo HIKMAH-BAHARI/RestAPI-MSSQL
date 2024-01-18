@@ -7,9 +7,7 @@ const getAllCustomers = (body) => {
 };
 
 const searchCostomers = (body) => {
-  const SQLQuery = `    SELECT
-  TOFRS.stsbyr,
-  TOFRS.tgltagih,
+  const SQLQuery = `    SELECT TOP 10
   TOFLMB.tglakad,
   TOFLMB.nokontrak,
   TOFLMB.acdrop,
@@ -33,15 +31,11 @@ FROM
   TOFLMB
 LEFT JOIN
   mCIF ON TOFLMB.nocif = mCIF.nocif
-RIGHT JOIN
-  TOFRS ON TOFLMB.nokontrak = TOFRS.nokontrak
 LEFT JOIN
   TOFTABB ON TOFLMB.acdrop = TOFTABB.notab
 WHERE
-  (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A' AND TOFRS.stsbyr = ''
+  (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A'
 GROUP BY
-  TOFRS.stsbyr,
-  TOFRS.tgltagih,
   TOFLMB.tglakad,
   TOFLMB.nokontrak,
   TOFLMB.acdrop,
