@@ -15,6 +15,21 @@ const getAllCustomers = async (req, res) => {
   }
 };
 
+const ViewOs = async (req, res) => {
+  try {
+    const { recordset } = await CustomerModel.ViewOs();
+
+    res.json({
+      data: recordset,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error,
+    });
+  }
+};
+
 const searchCostomers = async (req, res) => {
   console.log(req.body);
   const { body } = req;
@@ -37,4 +52,5 @@ const searchCostomers = async (req, res) => {
 module.exports = {
   getAllCustomers,
   searchCostomers,
+  ViewOs,
 };

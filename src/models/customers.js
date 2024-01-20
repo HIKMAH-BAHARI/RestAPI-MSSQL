@@ -61,7 +61,18 @@ ORDER BY
   return dbPool.query(SQLQuery).then((result) => result.recordset);
 };
 
+const ViewOs = (body) => {
+  const SQLQuery = `SELECT SUM (TOFLMB.osmdlc) as totalos from TOFLMB
+                    WHERE ( TOFLMB.stsrec in ('A', 'N') ) AND TOFLMB.ststrn = '*' AND
+                        ( TOFLMB.pokpby NOT IN ('12', '30','18') )  AND
+                          ( TOFLMB.kdloc >= '00' AND TOFLMB.kdloc <= '99' )  AND 	
+                          ( TOFLMB.stsacc NOT IN('W','C'))`;
+
+  return dbPool.query(SQLQuery);
+};
+
 module.exports = {
   getAllCustomers,
   searchCostomers,
+  ViewOs,
 };

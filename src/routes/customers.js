@@ -10,4 +10,7 @@ router.post('/', CustomerController.searchCostomers);
 // READ - GET
 router.get('/', CustomerController.getAllCustomers);
 
+//GET - OS Pembiayaan
+router.get('/os', CustomerController.ViewOs);
+
 module.exports = router;
