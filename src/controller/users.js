@@ -1,3 +1,5 @@
+require ('dotenv').config();
+const jwt = require('jsonwebtoken');
 const UserModel = require('../models/users');
 const bcrypt = require('bcrypt');
 
@@ -37,6 +39,43 @@ const getUserById = async (req, res) => {
       message: 'Server Error',
       serverMessage: error.message,
     });
+  }
+};
+
+const loginUser = async (req, res) => {
+  secretKey = process.env.SECRET_KEY;
+  const { email, password } = req.body;
+
+  try {
+    const user = await UserModel.loginUser(email);
+
+    // Tambahkan pernyataan log untuk memeriksa tipe data dan nilai
+    console.log('Type of password:', typeof password);
+    console.log('Value of password:', password);
+    console.log('Type of user.passwordHash:', typeof user.passwordHash);
+    console.log('Value of user.passwordHash:', user.passwordHash);
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Login gagal' });
+    }
+
+    // Tambahkan pernyataan log sebelum menggunakan bcrypt.compare
+    console.log('Before bcrypt.compare');
+
+    const passwordMatch = await bcrypt.compare(String(password), String(user.password));
+
+    // Tambahkan pernyataan log setelah menggunakan bcrypt.compare
+    console.log('After bcrypt.compare');
+
+    if (passwordMatch) {
+      const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1H' });
+      return res.json({ success: true, message: 'Login berhasil', token });
+    } else {
+      return res.status(401).json({ success: false, message: 'Login gagal' });
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    return res.status(500).json({ message: 'Server Error', serverMessage: error.message });
   }
 };
 
@@ -138,6 +177,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
   //getAllUsers,
   getUserById,
+  loginUser,
   createNewUser,
   //viewUserByName,
   updateUser,

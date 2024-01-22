@@ -1,4 +1,3 @@
-const dbPool = require('../config/databases');
 const dbPoolLogin = require('../config/databaseUser');
 const mssql = require('mssql');
 
@@ -13,6 +12,33 @@ const getUserById = (userId) => {
   return dbPool
     .query(SQLQuery, { userId: { type: dbPool.Int, val: userId } })
     .then((result) => result.recordset); // Mengambil hanya bagian recordset
+};
+
+const loginUser = async (email) => {
+  try {
+    const request = dbPoolLogin.request();
+    const result = await request
+      .input('email', mssql.NVarChar, email)
+      .query('SELECT * FROM tb_user WHERE email = @email');
+
+    // Tambahkan pernyataan log untuk memeriksa tipe data dan nilai
+    console.log('Type of email:', typeof email);
+    console.log('Value of email:', email);
+
+    // Tambahkan pernyataan log sebelum mengembalikan data
+    console.log('Before returning data from loginUser');
+
+    // Mengembalikan data pengguna jika ditemukan, atau null jika tidak ditemukan
+    const user = result.recordset.length > 0 ? result.recordset[0] : null;
+
+    // Tambahkan pernyataan log setelah mengembalikan data
+    console.log('After returning data from loginUser');
+
+    return user;
+  } catch (error) {
+    console.error('Error executing login query:', error.message);
+    throw error;
+  }
 };
 
 const getUserByEmail = async (email) => {
@@ -41,68 +67,6 @@ const createNewUser = (body) => {
   return request.query(SQLQuery);
 };
 
-// -- DIPINDAH KE CUSTOMERS
-// const viewUserByName = (body) => {
-//   const SQLQuery = `    SELECT
-//   TOP 1 TOFRS.stsbyr,
-//   TOFRS.tgltagih,
-//   TOFLMB.tglakad,
-//   TOFLMB.nokontrak,
-//   TOFLMB.acdrop,
-//   TOFLMB.nama,
-//   mCIF.alamat,
-//   mCIF.hp,
-//   TOFLMB.kdprd,
-//   TOFLMB.kdaoh,
-//   TOFLMB.frekmdl,
-//   TOFLMB.mdlawal,
-//   TOFLMB.mgnawal,
-//   TOFLMB.angsmdl,
-//   TOFLMB.angsmgn,
-//   SUM(angsmdl + angsmgn) as angsttl,
-//   TOFLMB.osmdlc,
-//   TOFLMB.osmgnc,
-//   TOFTABB.sahirrp,
-//   TOFLMB.colbaru,
-//   TOFLMB.kdcab
-// FROM
-//   TOFLMB
-// LEFT JOIN
-//   mCIF ON TOFLMB.nocif = mCIF.nocif
-// RIGHT JOIN
-//   TOFRS ON TOFLMB.nokontrak = TOFRS.nokontrak
-// LEFT JOIN
-//   TOFTABB ON TOFLMB.acdrop = TOFTABB.notab
-// WHERE
-//   (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A' AND TOFRS.stsbyr = ''
-// GROUP BY
-//   TOFRS.stsbyr,
-//   TOFRS.tgltagih,
-//   TOFLMB.tglakad,
-//   TOFLMB.nokontrak,
-//   TOFLMB.acdrop,
-//   TOFLMB.nama,
-//   mCIF.alamat,
-//   mCIF.hp,
-//   TOFLMB.kdprd,
-//   TOFLMB.kdaoh,
-//   TOFLMB.frekmdl,
-//   TOFLMB.mdlawal,
-//   TOFLMB.mgnawal,
-//   TOFLMB.angsmdl,
-//   TOFLMB.angsmgn,
-//   TOFLMB.osmdlc,
-//   TOFLMB.osmgnc,
-//   TOFTABB.sahirrp,
-//   TOFLMB.colbaru,
-//   TOFLMB.kdcab
-// ORDER BY
-//   TOFLMB.tglakad DESC
-// `;
-
-//   return dbPool.query(SQLQuery).then((result) => result.recordset);
-// };
-
 const updateUser = (body, idUser) => {
   const SQLQuery = `   UPDATE TOFDEP
                         SET nama='${body.name}', nomawal='${body.nomawal}', nomrp='${body.nomrp}'
@@ -120,6 +84,7 @@ const deleteUser = (idUser) => {
 module.exports = {
   getAllUsers,
   getUserById,
+  loginUser,
   getUserByEmail,
   createNewUser,
   //viewUserByName,
