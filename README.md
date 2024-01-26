@@ -7,4 +7,4 @@ post '/customers'
 get '/colls'
 
 // /users belum digunankan
-USE '/users'
+use '/users'
