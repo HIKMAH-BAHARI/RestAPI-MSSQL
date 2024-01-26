@@ -13,4 +13,7 @@ router.get('/', CustomerController.getAllCustomers);
 //GET - OS Pembiayaan
 router.get('/os', CustomerController.ViewOs);
 
+//GET - Tunggakan Harian
+//router.get('/arrears/:dateId', CustomerController.getAllArrears);
+
 module.exports = router;

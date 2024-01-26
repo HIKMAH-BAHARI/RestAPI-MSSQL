@@ -1,6 +1,7 @@
 const dbPool = require('../config/databases');
+const { format } = require('date-fns');
 
-const getAllCustomers = (body) => {
+const getAllCustomers = () => {
   const SQLQuery = `SELECT top 5 nocif, nama, nokontrak, kdprd, mdlawal FROM TOFLMB WHERE stsrec='A' ORDER BY nama`;
 
   return dbPool.query(SQLQuery);
@@ -80,8 +81,60 @@ const ViewOs = (body) => {
   return dbPool.query(SQLQuery);
 };
 
+// const getAllArrears = async (dateId) => {
+//   try {
+//     // Pastikan dateId diubah menjadi objek Date
+//     const parsedDate = new Date(dateId);
+//     if (isNaN(parsedDate)) {
+//       return null; // Tanggal tidak valid, kembalikan null atau sesuai kebutuhan Anda
+//     }
+
+//     // Ubah format dateId sesuai dengan format yang diharapkan dalam database
+//     const formattedDate = format(parsedDate, 'yyyyMMdd');
+
+//     const SQLQuery = `
+//       SELECT 
+//         TOFRS.nokontrak,
+//         TOFRS.tgltagih,
+//         TOFRS.hari,
+//         TOFRS.os,
+//         TOFRS.tagmdl,
+//         TOFRS.tagmgn,
+//         SUM(TOFRS.tagmdl + TOFRS.tagmgn) AS tagihan,
+//         mCIF.nm,
+//         mCIF.alamat,
+//         mCIF.hp
+//       FROM TOFRS 
+//         LEFT JOIN TOFLMB ON TOFRS.nokontrak = TOFLMB.nokontrak
+//         LEFT JOIN mCIF ON TOFLMB.nocif = mCIF.nocif
+//       WHERE TOFRS.tgltagih =@dateId AND TOFRS.stsbyr = ''
+//       GROUP BY
+//         TOFRS.nokontrak,
+//         TOFRS.tgltagih,
+//         TOFRS.hari,
+//         TOFRS.os,
+//         TOFRS.tagmdl,
+//         TOFRS.tagmgn,
+//         mCIF.nm,
+//         mCIF.alamat,
+//         mCIF.hp`;
+
+//     const request = dbPool.request();
+//     request.input('dateId', formattedDate); // Gunakan dateId yang telah diubah
+
+//     const result = await request.query(SQLQuery);
+//     return result.recordset;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+
+
+
 module.exports = {
   getAllCustomers,
   searchCostomers,
   ViewOs,
+ // getAllArrears,
 };
