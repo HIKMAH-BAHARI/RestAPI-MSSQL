@@ -1,5 +1,5 @@
 const dbPool = require('../config/databases');
-const { format } = require('date-fns');
+//const { format } = require('date-fns');
 
 const getAllCustomers = () => {
   const SQLQuery = `SELECT top 5 nocif, nama, nokontrak, kdprd, mdlawal FROM TOFLMB WHERE stsrec='A' ORDER BY nama`;
@@ -18,6 +18,9 @@ const searchCostomers = (body) => {
   mCIF.kecamatan,
   mCIF.kota,
   mCIF.hp,
+  MCIFJOB.alamat AS alamatpt,
+  MCIFJOB.kota AS kotapt,
+  MCIFJOB.namapt,
   TOFLMB.kdprd,
   TOFLMB.kdaoh,
   TOFLMB.frekmdl,
@@ -39,6 +42,8 @@ LEFT JOIN
   mCIF ON TOFLMB.nocif = mCIF.nocif
 LEFT JOIN
   TOFTABB ON TOFLMB.acdrop = TOFTABB.notab
+LEFT JOIN
+  MCIFJOB on mCIF.nocif = MCIFJOB.nocif
 WHERE
   (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A'
 GROUP BY
@@ -51,6 +56,9 @@ GROUP BY
   mCIF.kelurahan,
   mCIF.kecamatan,
   mCIF.hp,
+  MCIFJOB.namapt,
+  MCIFJOB.alamat,
+  MCIFJOB.kota,
   TOFLMB.kdprd,
   TOFLMB.kdaoh,
   TOFLMB.frekmdl,
@@ -71,7 +79,7 @@ ORDER BY
   return dbPool.query(SQLQuery).then((result) => result.recordset);
 };
 
-const ViewOs = (body) => {
+const ViewOs = () => {
   const SQLQuery = `SELECT SUM (TOFLMB.osmdlc) as totalos from TOFLMB
                     WHERE ( TOFLMB.stsrec in ('A', 'N') ) AND TOFLMB.ststrn = '*' AND
                         ( TOFLMB.pokpby NOT IN ('12', '30','18') )  AND
@@ -81,53 +89,71 @@ const ViewOs = (body) => {
   return dbPool.query(SQLQuery);
 };
 
-// const getAllArrears = async (dateId) => {
-//   try {
-//     // Pastikan dateId diubah menjadi objek Date
-//     const parsedDate = new Date(dateId);
-//     if (isNaN(parsedDate)) {
-//       return null; // Tanggal tidak valid, kembalikan null atau sesuai kebutuhan Anda
-//     }
+const ViewOsByKdloc = async (kdlocId) => {
+  try {
+    const SQLQuery = `
+      SELECT SUM(TOFLMB.osmdlc) as totalos
+      FROM TOFLMB
+      WHERE (
+        TOFLMB.stsrec IN ('A', 'N') AND
+        TOFLMB.ststrn = '*' AND
+        TOFLMB.pokpby NOT IN ('12', '30', '18') AND
+        TOFLMB.stsacc NOT IN ('W', 'C') AND
+        TOFLMB.kdloc >= @kdlocId AND TOFLMB.kdloc <= @kdlocId
+      )`;
 
-//     // Ubah format dateId sesuai dengan format yang diharapkan dalam database
-//     const formattedDate = format(parsedDate, 'yyyyMMdd');
+    const result = await dbPool.request()
+      .input('kdlocId', kdlocId)
+      .query(SQLQuery);
 
-//     const SQLQuery = `
-//       SELECT 
-//         TOFRS.nokontrak,
-//         TOFRS.tgltagih,
-//         TOFRS.hari,
-//         TOFRS.os,
-//         TOFRS.tagmdl,
-//         TOFRS.tagmgn,
-//         SUM(TOFRS.tagmdl + TOFRS.tagmgn) AS tagihan,
-//         mCIF.nm,
-//         mCIF.alamat,
-//         mCIF.hp
-//       FROM TOFRS 
-//         LEFT JOIN TOFLMB ON TOFRS.nokontrak = TOFLMB.nokontrak
-//         LEFT JOIN mCIF ON TOFLMB.nocif = mCIF.nocif
-//       WHERE TOFRS.tgltagih =@dateId AND TOFRS.stsbyr = ''
-//       GROUP BY
-//         TOFRS.nokontrak,
-//         TOFRS.tgltagih,
-//         TOFRS.hari,
-//         TOFRS.os,
-//         TOFRS.tagmdl,
-//         TOFRS.tagmgn,
-//         mCIF.nm,
-//         mCIF.alamat,
-//         mCIF.hp`;
+    return result.recordset;
+  } catch (error) {
+    throw error;
+  }
+};
 
-//     const request = dbPool.request();
-//     request.input('dateId', formattedDate); // Gunakan dateId yang telah diubah
+const getAllArrears = async (dateId) => {
+  try {
+    const SQLQuery = `
+      SELECT 
+        TOFRS.nokontrak,
+        TOFRS.tgltagih,
+        TOFRS.hari,
+        TOFRS.os,
+        TOFRS.tagmdl,
+        TOFRS.tagmgn,
+        SUM(TOFRS.tagmdl + TOFRS.tagmgn) AS angsuran,
+        mCIF.nm,
+        mCIF.alamat,
+        mCIF.hp,
+        TOFLMB.kdprd
+      FROM TOFRS 
+        LEFT JOIN TOFLMB ON TOFRS.nokontrak = TOFLMB.nokontrak
+        LEFT JOIN mCIF ON TOFLMB.nocif = mCIF.nocif
+      WHERE TOFRS.tgltagih = @dateId AND TOFRS.stsbyr = ''
+      GROUP BY
+        TOFRS.nokontrak,
+        TOFRS.tgltagih,
+        TOFRS.hari,
+        TOFRS.os,
+        TOFRS.tagmdl,
+        TOFRS.tagmgn,
+        mCIF.nm,
+        mCIF.alamat,
+        mCIF.hp,
+        TOFLMB.kdprd
+        ORDER BY CASE WHEN TOFLMB.kdprd = '27' THEN 1 ELSE 0 END`;
 
-//     const result = await request.query(SQLQuery);
-//     return result.recordset;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    const request = dbPool.request();
+    request.input('dateId', dateId);
+
+    const result = await request.query(SQLQuery);
+    return result.recordset;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 
 
@@ -136,5 +162,6 @@ module.exports = {
   getAllCustomers,
   searchCostomers,
   ViewOs,
- // getAllArrears,
+  getAllArrears,
+  ViewOsByKdloc,
 };
