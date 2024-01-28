@@ -21,4 +21,7 @@ router.get('/os/:kdlocId', CustomerController.ViewOsByKdloc);
 //GET - Tunggakan Harian
 router.get('/arrears', CustomerController.getAllArrears);
 
+//GET - Tunggakan Harian
+router.get('/realisasi', CustomerController.getAllRealisasi);
+
 module.exports = router;

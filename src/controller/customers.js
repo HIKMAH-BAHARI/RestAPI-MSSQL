@@ -70,7 +70,6 @@ const searchCostomers = async (req, res) => {
 const getAllArrears = async (req, res) => {
   try {
     const dateId = req.query.tanggal;
-    console.log('Received dateId:', dateId);
     const date = await CustomerModel.getAllArrears(dateId);
     
     
@@ -93,10 +92,36 @@ const getAllArrears = async (req, res) => {
   }
 }
 
+const getAllRealisasi = async (req, res) => {
+  try {
+    const dateStart = req.query.datestart;
+    const dateEnd = req.query.dateend;
+    const dated = await CustomerModel.getAllRealisasi(dateStart, dateEnd);
+    
+    if (!dateStart || !dateEnd ) {
+      return res.status(404).json({
+        message: 'Tanggal tidak valid',
+      });
+    }
+
+    res.json({
+      message: 'GET data success',
+      data: dated,
+    });
+  } catch (error){
+    console.error(error);
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error.message,
+    });
+  }
+}
+
 module.exports = {
   getAllCustomers,
   searchCostomers,
   ViewOs,
   getAllArrears,
   ViewOsByKdloc,
+  getAllRealisasi,
 };

@@ -154,6 +154,30 @@ const getAllArrears = async (dateId) => {
   }
 };
 
+const getAllRealisasi = async (dateStart, dateEnd) => {
+  try {
+    const SQLQuery = `
+    SELECT TOFLMB.kdaoh,TOFLMB.kdloc, SUM(TOFLMB.osmdlc) as pencairan
+    FROM TOFLMB
+    WHERE (TOFLMB.stsrec IN ('A', 'N')) AND TOFLMB.ststrn = '*' AND
+          (TOFLMB.pokpby NOT IN ('12', '30', '18')) AND
+          (TOFLMB.kdloc >= '00' AND TOFLMB.kdloc <= '99') AND 	
+          (TOFLMB.stsacc NOT IN('W', 'C')) AND
+          (TOFLMB.tgleff BETWEEN @dateStart AND @dateEnd)
+    GROUP BY TOFLMB.kdaoh, TOFLMB.kdloc
+    ORDER BY TOFLMB.kdloc ASC`;
+
+    const request = dbPool.request();
+    request.input('dateStart', dateStart);
+    request.input('dateEnd', dateEnd);
+
+    const result = await request.query(SQLQuery);
+    return result.recordset;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 
 
@@ -164,4 +188,5 @@ module.exports = {
   ViewOs,
   getAllArrears,
   ViewOsByKdloc,
+  getAllRealisasi,
 };
