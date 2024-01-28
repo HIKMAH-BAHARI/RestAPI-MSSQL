@@ -1,6 +1,6 @@
 const express = require('express');
-const authLogin= require('../middleware/authLogin');
 const UserController = require('../controller/users');
+const authenticateToken = require('../middleware/authenticateToken');
 
 const router = express.Router();
 
@@ -12,16 +12,6 @@ router.post('/', UserController.createNewUser);
 
 //LOGIN - POST
 router.post('/login', UserController.loginUser);
-// router.get('/protected', authLogin, async (req, res) => {
-//     try {
-//       const users = await User.getAll();
-//       res.json({ success: true, message: 'Rute terlindungi', data: users });
-//     } catch (err) {
-//       console.error('Error querying database:', err);
-//       res.status(500).send('Server error');
-//     }
-//   });
-
 
 // READ - GET
 //router.get('/', UserController.getAllUsers);
@@ -34,5 +24,7 @@ router.patch('/:idUser', UserController.updateUser);
 
 //DELETE - DELETE
 router.delete('/:idUser', UserController.deleteUser);
+
+router.get('/protected-route', authenticateToken, UserController.protectedRoute);
 
 module.exports = router;

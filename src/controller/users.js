@@ -52,8 +52,6 @@ const loginUser = async (req, res) => {
     // Tambahkan pernyataan log untuk memeriksa tipe data dan nilai
     console.log('Type of password:', typeof password);
     console.log('Value of password:', password);
-    console.log('Type of user.passwordHash:', typeof user.passwordHash);
-    console.log('Value of user.passwordHash:', user.passwordHash);
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Login gagal' });
@@ -174,6 +172,10 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const protectedRoute = (req, res) => {
+  res.json({ success: true, message: 'This is a protected route.', user: req.user });
+};
+
 module.exports = {
   //getAllUsers,
   getUserById,
@@ -182,4 +184,5 @@ module.exports = {
   //viewUserByName,
   updateUser,
   deleteUser,
+  protectedRoute,
 };
