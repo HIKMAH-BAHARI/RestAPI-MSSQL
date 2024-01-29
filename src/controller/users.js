@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
     console.log('After bcrypt.compare');
 
     if (passwordMatch) {
-      const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1H' });
+      const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1M' });
       return res.json({ success: true, message: 'Login berhasil', token });
     } else {
       return res.status(401).json({ success: false, message: 'Login gagal' });
@@ -131,7 +131,7 @@ const createNewUser = async (req, res) => {
 //   } catch (error) {
 //     res.status(500).json({
 //       message: 'Server Error',
-//       serverMessage: error,
+//       serverMessage: error,protectedRoute
 //     });
 //   }
 // };
