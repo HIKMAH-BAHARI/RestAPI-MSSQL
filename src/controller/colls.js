@@ -2,16 +2,23 @@ const CollModel = require('../models/colls');
 
 const getAllColl = async (req, res) => {
   try {
-    const { recordset } = await CollModel.getAllColl();
+    const generateColl = req.query.kdcoll;
+    const coll = await CollModel.getAllColl(generateColl);
+
+    if (!coll.length === 0) {
+      return res.status(404).json({
+        message: 'Tanggal tidak valid',
+      });
+    }
 
     res.json({
       message: 'GET all Nasabah Coll 2 success',
-      data: recordset,
+      data: coll,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Server Error',
-      serverMessage: error,
+      serverMessage: error.message,
     });
   }
 };

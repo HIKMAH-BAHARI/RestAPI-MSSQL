@@ -66,7 +66,7 @@ const loginUser = async (req, res) => {
     console.log('After bcrypt.compare');
 
     if (passwordMatch) {
-      const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1M' });
+      const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1H' });
       return res.json({ success: true, message: 'Login berhasil', token });
     } else {
       return res.status(401).json({ success: false, message: 'Login gagal' });
@@ -116,26 +116,6 @@ const createNewUser = async (req, res) => {
   }
 };
 
-// * DIPINDAH KE CUSTOMERS
-// const viewUserByName = async (req, res) => {
-//   console.log(req.body);
-//   const { body } = req;
-//   const user = await UserModel.viewUserByName(body);
-
-//   try {
-//     await UserModel.viewUserByName(body);
-//     res.status(201).json({
-//       message: 'Pencarian data sukses',
-//       data: user,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       message: 'Server Error',
-//       serverMessage: error,protectedRoute
-//     });
-//   }
-// };
-
 const updateUser = async (req, res) => {
   const { idUser } = req.params;
   const { body } = req;
@@ -181,7 +161,6 @@ module.exports = {
   getUserById,
   loginUser,
   createNewUser,
-  //viewUserByName,
   updateUser,
   deleteUser,
   protectedRoute,
