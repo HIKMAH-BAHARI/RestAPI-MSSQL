@@ -33,7 +33,7 @@ const searchCostomers = (body) => {
                         TOFLMB.osmdlc,
                         TOFLMB.osmgnc,
                         SUM (TOFLMB.osmdlc + TOFLMB.osmgnc) as sisa_angsuran,
-                        TOFTABB.sahirrp,
+                        TOFTABC.sahirrp,
                         TOFLMB.colbaru,
                         TOFLMB.kdcab
                         FROM
@@ -41,7 +41,7 @@ const searchCostomers = (body) => {
                         LEFT JOIN
                           mCIF ON TOFLMB.nocif = mCIF.nocif
                         LEFT JOIN
-                          TOFTABB ON TOFLMB.acdrop = TOFTABB.notab
+                          TOFTABC ON TOFLMB.acdrop = TOFTABC.notab
                         LEFT JOIN
                           MCIFJOB on mCIF.nocif = MCIFJOB.nocif
                         WHERE
@@ -69,7 +69,7 @@ const searchCostomers = (body) => {
                           TOFLMB.angsmgn,
                           TOFLMB.osmdlc,
                           TOFLMB.osmgnc,
-                          TOFTABB.sahirrp,
+                          TOFTABC.sahirrp,
                           TOFLMB.colbaru,
                           TOFLMB.kdcab
                         ORDER BY
