@@ -43,7 +43,7 @@ const getAllColl = async (generateColl) => {
   }
 };
 
-const getOsColl = (body) => {
+const getOsColl = () => {
   const SQLQuery = `  SELECT TOFLMB.kdloc, TOFLMB.colbaru, SUM(osmdlc) AS tot_osmdlc, Count(*) AS tot_rec FROM TOFLMB 
 		WHERE ( stsrec IN ('A','N')) AND pokpby NOT IN ('12','30','18') AND stsacc NOT IN ('W','C') AND ststrn = '*' 
 		GROUP BY TOFLMB.kdloc,TOFLMB.colbaru ORDER BY TOFLMB.kdloc ASC, TOFLMB.colbaru ASC	`;
@@ -51,7 +51,30 @@ const getOsColl = (body) => {
   return dbPool.query(SQLQuery);
 };
 
+const getNpf = async (colSt, colSc, colTd ) => {
+  try {
+  const SQLQuery =`SELECT  SUM(TOFLMB.osmdlc) as pencairan
+  FROM TOFLMB
+  WHERE (TOFLMB.stsrec IN ('A', 'N')) AND TOFLMB.ststrn = '*' AND
+        (TOFLMB.pokpby NOT IN ('12', '30', '18')) AND
+        (TOFLMB.kdloc >= '00' AND TOFLMB.kdloc <= '99') AND 	
+        (TOFLMB.stsacc NOT IN('W', 'C')) AND
+        (TOFLMB.colbaru IN(@colSt, @colSc, @colTd))`
+
+        const request = dbPool.request();
+        request.input('colSt', colSt)
+        request.input('colSc', colSc)
+        request.input('colTd', colTd)
+
+        const result = await request.query(SQLQuery);
+        return result.recordset
+  } catch (error) {
+    throw error
+  }
+};
+
 module.exports = {
   getAllColl,
   getOsColl,
+  getNpf,
 };
