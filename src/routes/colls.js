@@ -10,4 +10,7 @@ router.get('/', CollController.getAllColl);
 //Read - GET OS Total Coll
 router.get('/os', CollController.getOsColl);
 
+//Read - GET NPF
+router.get('/npf', CollController.getNpf);
+
 module.exports = router;

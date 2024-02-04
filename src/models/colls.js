@@ -31,7 +31,7 @@ const getAllColl = async (generateColl) => {
       TOFLMB.stsrec IN ('A', 'N') AND
       TOFLMB.pokpby NOT IN ('12','30','18') AND
       TOFLMB.stsacc NOT IN ('W','C') AND stsrest <> 'Y'
-  ORDER BY TOFLMB.kdaoh  
+  ORDER BY CASE WHEN TOFLMB.kdprd = '27' THEN 1 ELSE 0 END 
      `;
      const request = dbPool.request();
      request.input('generateColl', generateColl)
@@ -51,27 +51,22 @@ const getOsColl = () => {
   return dbPool.query(SQLQuery);
 };
 
-const getNpf = async (colSt, colSc, colTd ) => {
-  try {
-  const SQLQuery =`SELECT  SUM(TOFLMB.osmdlc) as pencairan
-  FROM TOFLMB
-  WHERE (TOFLMB.stsrec IN ('A', 'N')) AND TOFLMB.ststrn = '*' AND
-        (TOFLMB.pokpby NOT IN ('12', '30', '18')) AND
-        (TOFLMB.kdloc >= '00' AND TOFLMB.kdloc <= '99') AND 	
-        (TOFLMB.stsacc NOT IN('W', 'C')) AND
-        (TOFLMB.colbaru IN(@colSt, @colSc, @colTd))`
+const getNpf = () => {
+  const SQLQuery =` SELECT 
+  SUM(CASE WHEN TOFLMB.colbaru = '3' THEN TOFLMB.osmdlc ELSE 0 END) AS col_3,
+  SUM(CASE WHEN TOFLMB.colbaru = '4' THEN TOFLMB.osmdlc ELSE 0 END) AS col_4,
+  SUM(CASE WHEN TOFLMB.colbaru = '5' THEN TOFLMB.osmdlc ELSE 0 END) AS col_5
+FROM TOFLMB
+WHERE 
+  TOFLMB.stsrec IN ('A', 'N') AND
+  TOFLMB.ststrn = '*' AND
+  TOFLMB.pokpby NOT IN ('12', '30', '18') AND
+  TOFLMB.kdloc >= '00' AND TOFLMB.kdloc <= '99' AND 	
+  TOFLMB.stsacc NOT IN('W', 'C') AND
+  TOFLMB.colbaru IN ('3', '4', '5')`;
 
-        const request = dbPool.request();
-        request.input('colSt', colSt)
-        request.input('colSc', colSc)
-        request.input('colTd', colTd)
-
-        const result = await request.query(SQLQuery);
-        return result.recordset
-  } catch (error) {
-    throw error
+  return dbPool.query(SQLQuery)
   }
-};
 
 module.exports = {
   getAllColl,

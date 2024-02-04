@@ -39,7 +39,26 @@ const getOsColl = async (req, res) => {
   }
 };
 
+const getNpf = async (req, res) => {
+  try {
+    const { recordset } = await CollModel.getNpf()
+
+    res.json({
+      message: 'Get NPF success',
+      data: recordset, 
+    })
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error.message,
+    })
+  }
+}
+
 module.exports = {
   getAllColl,
   getOsColl,
+  getNpf,
 };
