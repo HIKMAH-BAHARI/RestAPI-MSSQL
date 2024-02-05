@@ -12,8 +12,8 @@ const upload = require('./middleware/multer');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: 'http://localhost:3000', // Sesuaikan dengan asal aplikasi frontend Anda
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: 'http://localhost:3000',
+  methods: 'GET,HEAD,POST',
   credentials: true,
   allowedHeaders: 'Content-Type,Authorization', // Tambahkan 'Authorization' ke daftar allowed headers
 }));
