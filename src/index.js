@@ -20,13 +20,8 @@ const options = {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-<<<<<<< HEAD
   origin: 'https://ereport-hikba.vercel.app', 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-=======
-  origin: 'http://localhost:3000',
-  methods: 'GET,HEAD,POST',
->>>>>>> f9eb113b0e325c2d03d84c61cc4e120fc5cbe58e
   credentials: true,
   allowedHeaders: 'Content-Type,Authorization', 
 }));

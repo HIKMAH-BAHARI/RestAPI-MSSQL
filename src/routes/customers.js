@@ -2,11 +2,8 @@ const express = require('express');
 const CustomerController = require('../controller/customers');
 const router = express.Router();
 const authenticateToken =require('../middleware/authenticateToken')
-<<<<<<< HEAD
-=======
-// const cors = require('cors')
->>>>>>> f9eb113b0e325c2d03d84c61cc4e120fc5cbe58e
 
+// const cors = require('cors')
 // router.use(cors());
 router.use(authenticateToken); // untuk mengaktifkan semua authenticateToken
 

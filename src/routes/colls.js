@@ -1,9 +1,5 @@
 const express = require('express');
-<<<<<<< HEAD
-=======
-const authenticateToken = require('../middleware/authenticateToken')
 
->>>>>>> f9eb113b0e325c2d03d84c61cc4e120fc5cbe58e
 const CollController = require('../controller/colls');
 const authenticateToken = require('../middleware/authenticateToken');
 
