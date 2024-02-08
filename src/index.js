@@ -2,6 +2,9 @@ require('dotenv').config();
 const PORT = process.env.PORT || 5000;
 const express = require('express');
 const cors = require('cors');
+const https = require('https');
+const fs = require('fs');
+
 
 const usersRouters = require('./routes/users');
 const collsRouters = require('./routes/colls');
@@ -10,23 +13,26 @@ const middlewareLogRequest = require('./middleware/logs');
 const upload = require('./middleware/multer');
 
 const app = express();
+const options = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./combined.pem')
+};
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: 'http://localhost:3000', // Sesuaikan dengan asal aplikasi frontend Anda
+  origin: 'https://ereport-hikba.vercel.app', // Sesuaikan dengan asal aplikasi frontend Anda
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: 'Content-Type,Authorization', // Tambahkan 'Authorization' ke daftar allowed headers
 }));
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*'); // Ganti '*' dengan asal yang diizinkan di lingkungan produksi
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept'
-//   );
-//   next();
-// });
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://ereport-hikba.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Credentials', true);  
+  next();
+});
 
 app.use(middlewareLogRequest);
 app.use(express.json());
@@ -47,6 +53,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server Running on Port ${PORT}`);
+https.createServer(options, app).listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
+

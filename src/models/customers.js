@@ -184,11 +184,13 @@ const getAllRealisasi = async (dateStart, dateEnd) => {
     FROM TOFLMB,
 			MCIF,
 			TOFTRNH
-   WHERE ( tgltrn >= '20240101' AND tgltrn <= '20240131' ) AND  
+   WHERE ( tgltrn >= @dateStart AND tgltrn <= @dateEnd ) AND  
 			( TOFLMB.nocif = MCIF.nocif ) AND
 			( TOFTRNH.dracc = TOFLMB.nokontrak ) AND
 			( TOFLMB.kdloc >= '01' AND TOFLMB.kdloc <= '99') AND
-			( TOFTRNH.ststrn IN ('5','6')) AND jnstrnlx = '01' AND LEFT(ket,7) <> 'Koreksi' `;
+			( TOFTRNH.ststrn IN ('5','6')) AND jnstrnlx = '01' AND LEFT(ket,7) <> 'Koreksi'
+    ORDER BY
+      TOFLMB.kdaoh, TOFLMB.kdloc`;
 
     const request = dbPool.request();
     request.input('dateStart', dateStart);

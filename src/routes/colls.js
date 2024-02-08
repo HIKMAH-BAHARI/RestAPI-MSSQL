@@ -1,8 +1,10 @@
 const express = require('express');
-
 const CollController = require('../controller/colls');
+const authenticateToken = require('../middleware/authenticateToken');
 
 const router = express.Router();
+
+router.use(authenticateToken);
 
 //Read - GET Nasabah Coll 2
 router.get('/', CollController.getAllColl);
