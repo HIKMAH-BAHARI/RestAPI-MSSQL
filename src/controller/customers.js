@@ -49,7 +49,6 @@ const ViewOsByKdloc = async (req, res) => {
 }
 
 const searchCostomers = async (req, res) => {
-  console.log(req.body);
   const { body } = req;
   const customer = await CustomerModel.searchCostomers(body);
 

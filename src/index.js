@@ -20,19 +20,19 @@ const options = {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: 'https://ereport-hikba.vercel.app', 
+  origin: '*', 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: 'Content-Type,Authorization', 
 }));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://ereport-hikba.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Credentials', true);  
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   res.header('Access-Control-Allow-Credentials', true);  
+//   next();
+// });
 
 app.use(middlewareLogRequest);
 app.use(express.json());
@@ -53,7 +53,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-https.createServer(options, app).listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+// https.createServer(options, app).listen(PORT, () => {
+//   console.log(`Server listening on port ${PORT}`);
+// });
 
+app.listen(PORT, () =>{
+  console.log(`Server listening on port ${PORT}`)
+})

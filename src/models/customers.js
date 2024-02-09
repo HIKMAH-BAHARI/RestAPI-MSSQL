@@ -1,5 +1,5 @@
 const dbPool = require('../config/databases');
-// const { format } = require('date-fns');
+const mssql = require('mssql');
 
 const getAllCustomers = () => {
   const SQLQuery = 'SELECT top 5 nocif, nama, nokontrak, kdprd, mdlawal FROM TOFLMB WHERE stsrec=\'A\' ORDER BY nama';
@@ -45,7 +45,7 @@ const searchCostomers = (body) => {
                         LEFT JOIN
                           MCIFJOB on mCIF.nocif = MCIFJOB.nocif
                         WHERE
-                          (TOFLMB.nama LIKE '%${body.nama}%' OR TOFLMB.nokontrak LIKE '${body.nama}') AND TOFLMB.stsrec = 'A'
+                          (TOFLMB.nama LIKE '%' + @nama + '%' OR TOFLMB.nokontrak LIKE @nama) AND TOFLMB.stsrec = 'A'
                         GROUP BY
                           TOFLMB.tglakad,
                           TOFLMB.nokontrak,
@@ -76,9 +76,11 @@ const searchCostomers = (body) => {
                           TOFLMB.tglakad DESC
                         `;
 
-  return dbPool.query(SQLQuery).then((result) => result.recordset);
-};
-
+                        const request = dbPool.request();
+                        request.input('nama', mssql.VarChar, `%${body.nama}%`);
+                      
+                        return request.query(SQLQuery).then((result) => result.recordset);
+                      };
 const ViewOs = () => {
   const SQLQuery = `SELECT SUM (TOFLMB.osmdlc) as totalos from TOFLMB
                     WHERE ( TOFLMB.stsrec in ('A', 'N') ) AND TOFLMB.ststrn = '*' AND
