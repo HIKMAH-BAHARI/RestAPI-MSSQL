@@ -13,6 +13,7 @@ router.post('/', UserController.createNewUser);
 
 //LOGIN - POST
 router.post('/login', UserController.loginUser);
+router.patch('/changepwd/:id', UserController.updatePwd);
 
 // READ - GET
 //router.get('/', UserController.getAllUsers);

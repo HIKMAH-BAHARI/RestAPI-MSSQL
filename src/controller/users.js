@@ -3,21 +3,6 @@ const jwt = require('jsonwebtoken');
 const UserModel = require('../models/users');
 const bcrypt = require('bcrypt');
 
-// const getAllUsers = async (req, res) => {
-//   try {
-//     const { recordset } = await UserModel.getAllUsers();
-
-//     res.json({
-//       data: recordset,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       message: 'Server Error',
-//       serverMessage: error,
-//     });
-//   }
-// };
-
 const getUserById = async (req, res) => {
   try {
     const userId = req.params.id; // Mendapatkan nilai ID dari parameter rute
@@ -50,20 +35,14 @@ const loginUser = async (req, res) => {
     const user = await UserModel.loginUser(email);
 
     // Tambahkan pernyataan log untuk memeriksa tipe data dan nilai
-    console.log('Type of password:', typeof password);
-    console.log('Value of password:', password);
+    // console.log('Type of password:', typeof password);
+    // console.log('Value of password:', password);
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Login gagal' });
     }
 
-    // Tambahkan pernyataan log sebelum menggunakan bcrypt.compare
-    console.log('Before bcrypt.compare');
-
     const passwordMatch = await bcrypt.compare(String(password), String(user.password));
-
-    // Tambahkan pernyataan log setelah menggunakan bcrypt.compare
-    console.log('After bcrypt.compare');
 
     if (passwordMatch) {
       const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1H' });
@@ -116,6 +95,25 @@ const createNewUser = async (req, res) => {
   }
 };
 
+const updatePwd = async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  
+  try {
+    const UserPwd = await UserModel.updatePwd({ password: hashedPassword }, id);
+    res.json({
+      message: 'UPDATE password success',
+      data: UserPwd,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error
+    });
+  }
+};
+
 const updateUser = async (req, res) => {
   const { idUser } = req.params;
   const { body } = req;
@@ -157,10 +155,10 @@ const protectedRoute = (req, res) => {
 };
 
 module.exports = {
-  //getAllUsers,
   getUserById,
   loginUser,
   createNewUser,
+  updatePwd,
   updateUser,
   deleteUser,
   protectedRoute,

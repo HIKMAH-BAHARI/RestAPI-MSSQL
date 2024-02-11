@@ -22,18 +22,11 @@ const loginUser = async (email) => {
       .query('SELECT * FROM tb_user WHERE email = @email');
 
     // Tambahkan pernyataan log untuk memeriksa tipe data dan nilai
-    console.log('Type of email:', typeof email);
-    console.log('Value of email:', email);
-
-    // Tambahkan pernyataan log sebelum mengembalikan data
-    console.log('Before returning data from loginUser');
+    // console.log('Type of email:', typeof email);
+    // console.log('Value of email:', email);
 
     // Mengembalikan data pengguna jika ditemukan, atau null jika tidak ditemukan
     const user = result.recordset.length > 0 ? result.recordset[0] : null;
-
-    // Tambahkan pernyataan log setelah mengembalikan data
-    console.log('After returning data from loginUser');
-
     return user;
   } catch (error) {
     console.error('Error executing login query:', error.message);
@@ -67,6 +60,17 @@ const createNewUser = (body) => {
   return request.query(SQLQuery);
 };
 
+const updatePwd = (body, id) => {
+  const SQLQuery = ` UPDATE tb_user SET password = @password WHERE id = @id`;
+  
+  const request = dbPoolLogin.request();
+  request.input('password', mssql.VarChar, body.password);
+  request.input('id', mssql.Int, id);
+  console.log(body.password, id)
+
+  return request.query(SQLQuery);
+}
+
 const updateUser = (body, idUser) => {
   const SQLQuery = `   UPDATE TOFDEP
                         SET nama='${body.name}', nomawal='${body.nomawal}', nomrp='${body.nomrp}'
@@ -87,7 +91,7 @@ module.exports = {
   loginUser,
   getUserByEmail,
   createNewUser,
-  //viewUserByName,
+  updatePwd,
   updateUser,
   deleteUser,
 };
