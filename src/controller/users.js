@@ -2,6 +2,7 @@ require ('dotenv').config();
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/users');
 const bcrypt = require('bcrypt');
+const verifyToken = require('../middleware/verifyToken');
 
 const getUserById = async (req, res) => {
   try {
@@ -96,20 +97,35 @@ const createNewUser = async (req, res) => {
 };
 
 const updatePwd = async (req, res) => {
-  const { id } = req.params;
-  const { password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const { oldPassword ,newPassword } = req.body;
   
   try {
-    const UserPwd = await UserModel.updatePwd({ password: hashedPassword }, id);
+    const user = await UserModel.findById(req.user.id)
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+      });
+    }
+
+    const isOldPassword =  await bcrypt.compare(oldPassword, user.password);
+    if (!isOldPassword) {
+      return res.status(400).json({
+        message: 'Invalid old password',
+      })
+    }
+    
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const updateUser = await UserModel.updatePwd(req.user.id, hashedPassword);
     res.json({
       message: 'UPDATE password success',
-      data: UserPwd,
+      data: {
+        user: updateUser,
+      }
     });
   } catch (error) {
     res.status(500).json({
       message: 'Server Error',
-      serverMessage: error
+      serverMessage: error.message,
     });
   }
 };
@@ -159,6 +175,7 @@ module.exports = {
   loginUser,
   createNewUser,
   updatePwd,
+  verifyToken,
   updateUser,
   deleteUser,
   protectedRoute,

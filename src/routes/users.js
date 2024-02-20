@@ -1,9 +1,11 @@
 const express = require('express');
 const UserController = require('../controller/users');
 const authenticateToken = require('../middleware/authenticateToken');
-
+const verifyToken = require('../middleware/verifyToken');
 const router = express.Router();
+const cors = require('cors');
 
+router.use(cors());
 
 //CREATE - POST
 router.post('/', UserController.createNewUser);
@@ -13,7 +15,7 @@ router.post('/', UserController.createNewUser);
 
 //LOGIN - POST
 router.post('/login', UserController.loginUser);
-router.patch('/changepwd/:id', UserController.updatePwd);
+router.patch('/changepwd', verifyToken, UserController.updatePwd);
 
 // READ - GET
 //router.get('/', UserController.getAllUsers);

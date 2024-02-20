@@ -60,13 +60,22 @@ const createNewUser = (body) => {
   return request.query(SQLQuery);
 };
 
-const updatePwd = (body, id) => {
+const findById = async (userId) => {
+  const SQLQuery = `SELECT * FROM tb_user WHERE id= @id`;
+
+  const request = dbPoolLogin.request();
+  request.input('id', mssql.Int, userId);
+
+  const result = await request.query(SQLQuery);
+  return result.recordset[0];
+}
+
+const updatePwd = async (userId, hasedNewPassword) => {
   const SQLQuery = ` UPDATE tb_user SET password = @password WHERE id = @id`;
   
   const request = dbPoolLogin.request();
-  request.input('password', mssql.VarChar, body.password);
-  request.input('id', mssql.Int, id);
-  console.log(body.password, id)
+  request.input('password', mssql.VarChar, hasedNewPassword);
+  request.input('id', mssql.Int, userId);
 
   return request.query(SQLQuery);
 }
@@ -92,6 +101,7 @@ module.exports = {
   getUserByEmail,
   createNewUser,
   updatePwd,
+  findById,
   updateUser,
   deleteUser,
 };
