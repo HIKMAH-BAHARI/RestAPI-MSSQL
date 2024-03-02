@@ -68,8 +68,26 @@ WHERE
   return dbPool.query(SQLQuery)
   }
 
+const getNpfLoc = () => {
+  const SQLQuery =` SELECT 
+  SUM(CASE WHEN TOFLMB.colbaru IN ('3','4','5') AND TOFLMB.kdloc='01' THEN TOFLMB.osmdlc ELSE 0 END) AS kdloc_01,
+  SUM(CASE WHEN TOFLMB.colbaru IN ('3','4','5') AND TOFLMB.kdloc='02' THEN TOFLMB.osmdlc ELSE 0 END) AS kdloc_02,
+  SUM(CASE WHEN TOFLMB.colbaru IN ('3','4','5') AND TOFLMB.kdloc='03' THEN TOFLMB.osmdlc ELSE 0 END) AS kdloc_03,
+  SUM(CASE WHEN TOFLMB.colbaru IN ('3','4','5') AND (TOFLMB.kdloc='01' OR TOFLMB.kdloc='02' OR TOFLMB.kdloc='03') THEN TOFLMB.osmdlc ELSE 0 END) AS osnpf
+FROM TOFLMB
+WHERE 
+  TOFLMB.stsrec IN ('A', 'N') AND
+  TOFLMB.ststrn = '*' AND
+  TOFLMB.pokpby NOT IN ('12', '30', '18') AND 	
+  TOFLMB.stsacc NOT IN('W', 'C') AND
+  TOFLMB.colbaru IN ('3', '4', '5')`;
+
+  return dbPool.query(SQLQuery)
+}
+
 module.exports = {
   getAllColl,
   getOsColl,
   getNpf,
+  getNpfLoc,
 };

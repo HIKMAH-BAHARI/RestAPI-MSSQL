@@ -16,4 +16,7 @@ router.get('/os', CollController.getOsColl);
 //Read - GET NPF
 router.get('/npf', CollController.getNpf);
 
+//Read - GET NPF by kdlocation
+router.get('/kdloc', CollController.getNpfLoc);
+
 module.exports = router;
