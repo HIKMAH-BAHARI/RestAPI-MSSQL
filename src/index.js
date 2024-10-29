@@ -9,8 +9,10 @@ const fs = require('fs');
 const usersRouters = require('./routes/users');
 const collsRouters = require('./routes/colls');
 const customersRouters = require('./routes/customers');
+const blastsRouters =  require('./routes/blasts');
 const middlewareLogRequest = require('./middleware/logs');
 const upload = require('./middleware/multer');
+const crRouter = require('./routes/cashratio');
 
 const app = express();
 const options = {
@@ -41,7 +43,8 @@ app.use('/assets', express.static('public/images'));
 app.use('/users', usersRouters);
 app.use('/colls', collsRouters);
 app.use('/customers', customersRouters);
-
+app.use('/blasts', blastsRouters);
+app.use('/cashratio', crRouter);
 app.post('/upload', upload.single('photo'), (req, res) => {
   res.json({
     message: 'Upload berhasil',

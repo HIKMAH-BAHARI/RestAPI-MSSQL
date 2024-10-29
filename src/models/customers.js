@@ -120,7 +120,6 @@ const getAllArrears = async (dateId) => {
       SELECT 
         TOFRS.nokontrak,
         TOFRS.tgltagih,
-        TOFRS.hari,
         TOFRS.os,
         TOFRS.tagmdl,
         TOFRS.tagmgn,
@@ -128,7 +127,8 @@ const getAllArrears = async (dateId) => {
         mCIF.nm,
         mCIF.alamat,
         mCIF.hp,
-        TOFLMB.kdprd
+        TOFLMB.kdprd,
+        TOFLMB.haritgk
       FROM TOFRS 
         LEFT JOIN TOFLMB ON TOFRS.nokontrak = TOFLMB.nokontrak
         LEFT JOIN mCIF ON TOFLMB.nocif = mCIF.nocif
@@ -143,7 +143,8 @@ const getAllArrears = async (dateId) => {
         mCIF.nm,
         mCIF.alamat,
         mCIF.hp,
-        TOFLMB.kdprd
+        TOFLMB.kdprd,
+        TOFLMB.haritgk
         ORDER BY CASE WHEN TOFLMB.kdprd = '27' THEN 1 ELSE 0 END`;
 
     const request = dbPool.request();
