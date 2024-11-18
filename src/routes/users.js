@@ -8,7 +8,7 @@ const cors = require('cors');
 router.use(cors());
 
 //CREATE - POST
-router.post('/', UserController.createNewUser);
+// router.post('/', UserController.createNewUser);
 
 //Read - POST
 //router.post('/search', UserController.viewUserByName);
