@@ -35,7 +35,8 @@ const searchCostomers = (body) => {
                         SUM (TOFLMB.osmdlc + TOFLMB.osmgnc) as sisa_angsuran,
                         TOFTABC.sahirrp,
                         TOFLMB.colbaru,
-                        TOFLMB.kdcab
+                        TOFLMB.kdcab,
+			TOFLMB.acdrop
                         FROM
                           TOFLMB
                         LEFT JOIN
@@ -71,7 +72,8 @@ const searchCostomers = (body) => {
                           TOFLMB.osmgnc,
                           TOFTABC.sahirrp,
                           TOFLMB.colbaru,
-                          TOFLMB.kdcab
+                          TOFLMB.kdcab,
+			  TOFLMB.acdrop
                         ORDER BY
                           TOFLMB.tglakad DESC
                         `;
