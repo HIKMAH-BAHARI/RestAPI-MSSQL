@@ -35,8 +35,7 @@ const searchCostomers = (body) => {
                         SUM (TOFLMB.osmdlc + TOFLMB.osmgnc) as sisa_angsuran,
                         TOFTABC.sahirrp,
                         TOFLMB.colbaru,
-                        TOFLMB.kdcab,
-			TOFLMB.acdrop
+                        TOFLMB.kdcab
                         FROM
                           TOFLMB
                         LEFT JOIN
@@ -72,8 +71,7 @@ const searchCostomers = (body) => {
                           TOFLMB.osmgnc,
                           TOFTABC.sahirrp,
                           TOFLMB.colbaru,
-                          TOFLMB.kdcab,
-			  TOFLMB.acdrop
+                          TOFLMB.kdcab
                         ORDER BY
                           TOFLMB.tglakad DESC
                         `;
@@ -130,7 +128,8 @@ const getAllArrears = async (dateId) => {
         mCIF.alamat,
         mCIF.hp,
         TOFLMB.kdprd,
-        TOFLMB.haritgk
+        TOFLMB.haritgk,
+	TOFLMB.acdrop
       FROM TOFRS 
         LEFT JOIN TOFLMB ON TOFRS.nokontrak = TOFLMB.nokontrak
         LEFT JOIN mCIF ON TOFLMB.nocif = mCIF.nocif
@@ -146,7 +145,8 @@ const getAllArrears = async (dateId) => {
         mCIF.alamat,
         mCIF.hp,
         TOFLMB.kdprd,
-        TOFLMB.haritgk
+        TOFLMB.haritgk,
+	TOFLMB.acdrop
         ORDER BY CASE WHEN TOFLMB.kdprd = '27' THEN 1 ELSE 0 END`;
 
     const request = dbPool.request();
