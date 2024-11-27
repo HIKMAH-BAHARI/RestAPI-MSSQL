@@ -8,7 +8,7 @@ const getAllCustomers = () => {
 };
 
 const searchCostomers = (body) => {
-  const SQLQuery = `    SELECT TOP 10
+  const SQLQuery = `    SELECT TOP 5
                         TOFLMB.tglakad,
                         TOFLMB.nokontrak,
                         TOFLMB.acdrop,
@@ -34,6 +34,7 @@ const searchCostomers = (body) => {
                         TOFLMB.osmgnc,
                         SUM (TOFLMB.osmdlc + TOFLMB.osmgnc) as sisa_angsuran,
                         TOFTABC.sahirrp,
+                        TOFTABC.saldoblok,
                         TOFLMB.colbaru,
                         TOFLMB.kdcab
                         FROM
@@ -70,6 +71,7 @@ const searchCostomers = (body) => {
                           TOFLMB.osmdlc,
                           TOFLMB.osmgnc,
                           TOFTABC.sahirrp,
+                          TOFTABC.saldoblok,
                           TOFLMB.colbaru,
                           TOFLMB.kdcab
                         ORDER BY

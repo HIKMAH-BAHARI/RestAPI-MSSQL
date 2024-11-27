@@ -3,6 +3,7 @@ require ('dotenv').config()
 
 const authenticateToken = (req, res, next) => {
   const secretKey = process.env.SECRET_KEY;
+  const staticToken = process.env.STATIC_TOKEN;
   const token = req.header('Authorization');
 
   if (!token) {
@@ -10,6 +11,11 @@ const authenticateToken = (req, res, next) => {
   }
 
   try {
+
+    if (token === staticToken) {
+      req.user = { role: 'static_user' };
+      return next();
+    }
     const user = jwt.verify(token, secretKey);
     req.user = user;
     next();
