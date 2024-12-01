@@ -9,7 +9,7 @@ const getAllCustomers = () => {
 
 const searchCostomers = (body) => {
   const SQLQuery = `    SELECT TOP 5
-                        TOFLMB.tglakad,
+                        TOFLMB.tgleff,
                         TOFLMB.nokontrak,
                         TOFLMB.acdrop,
                         TOFLMB.nama,
@@ -48,7 +48,7 @@ const searchCostomers = (body) => {
                         WHERE
                           (TOFLMB.nama LIKE '%' + @nama + '%' OR TOFLMB.nokontrak LIKE @nama) AND TOFLMB.stsrec = 'A'
                         GROUP BY
-                          TOFLMB.tglakad,
+                          TOFLMB.tgleff,
                           TOFLMB.nokontrak,
                           TOFLMB.acdrop,
                           TOFLMB.nama,
