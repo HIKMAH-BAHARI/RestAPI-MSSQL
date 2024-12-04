@@ -5,75 +5,56 @@ const cors = require('cors');
 const https = require('https');
 const fs = require('fs');
 
-// ... route imports ...
+
+const usersRouters = require('./routes/users');
+const collsRouters = require('./routes/colls');
+const customersRouters = require('./routes/customers');
+const blastsRouters =  require('./routes/blasts');
+const middlewareLogRequest = require('./middleware/logs');
+const upload = require('./middleware/multer');
+const crRouter = require('./routes/cashratio');
+const sertifRouter = require('./routes/sertifs');
 
 const app = express();
-
-// HTTPS options
 const options = {
   key: fs.readFileSync('./key.pem'),
   cert: fs.readFileSync('./combined.pem')
 };
 
-// Konfigurasi CORS yang lebih lengkap
-const corsOptions = {
-  origin: process.env.ALLOWED_ORIGINS?.split(','),
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: '*',  
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-  maxAge: 86400, // 24 jam
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-};
+  allowedHeaders: 'Content-Type,Authorization', 
+}));
 
-app.use(cors(corsOptions));
 
-// Security headers
-app.use((req, res, next) => {
-  res.header('X-Content-Type-Options', 'nosniff');
-  res.header('X-Frame-Options', 'DENY');
-  res.header('X-XSS-Protection', '1; mode=block');
-  res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  next();
+app.use(middlewareLogRequest);
+app.use(express.json());
+app.use('/assets', express.static('public/images'));
+app.use('/users', usersRouters);
+app.use('/colls', collsRouters);
+app.use('/customers', customersRouters);
+app.use('/blasts', blastsRouters);
+app.use('/cashratio', crRouter);
+app.use('/inputsertif', sertifRouter);
+app.post('/upload', upload.single('photo'), (req, res) => {
+  res.json({
+    message: 'Upload berhasil',
+  });
 });
 
-// Increase payload limit if needed
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
-// ... rest of your middleware and routes ...
-
-// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || 'Internal Server Error',
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  res.json({
+    message: err.message,
   });
 });
 
-// Handle 404
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
-  });
-});
+// https.createServer(options, app).listen(PORT, () => {
+//   console.log(`Server listening on port ${PORT}`);
+// });
 
-// Create HTTPS server
-https.createServer(options, app).listen(PORT, () => {
-  console.log(`Server running on https://localhost:${PORT}`);
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Rejection:', err);
-  process.exit(1);
-});
+app.listen(PORT, () =>{
+  console.log(`Server listening on port ${PORT}`)
+})
