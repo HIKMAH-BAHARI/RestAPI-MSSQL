@@ -1,39 +1,20 @@
 const SertifModel = require('../models/sertifs');
 
-const InputSertif = async (req, res) => {
-    try {
-    const { nokontrak, nama, sahir, saldoblok, notab, angsmdl, angsmgn, tgleff,
-        tf_hik, tf_nasabah, sahiratm, tglinput, kdaoh, userinput } = req.body;
+const searchSertifs = async (req, res) => {
+  const { body } = req;
+  const sertif = await SertifModel.searchSertifs(body);
 
-    if (Object.values({
-        nokontrak, nama, sahir, saldoblok, notab, angsmdl, angsmgn, tgleff,
-        tf_hik, tf_nasabah, sahiratm, tglinput, kdaoh, userinput
-    }).some(value => !value)) {
-        return res.status(400).json({
-            message: 'Data tidak boleh kosong',
-            data: null,
-        });
-    }
-
-    await SertifModel.InputSertif({
-        nokontrak, nama, sahir, saldoblok, notab, angsmdl, angsmgn, tgleff,
-        tf_hik, tf_nasabah, sahiratm, tglinput, kdaoh, userinput 
-    });
-    
+  try {
+    await SertifModel.searchSertifs(body);
     res.status(201).json({
-        message: 'Input Sertif success',
-        data: {
-        nokontrak, nama, sahir, saldoblok, notab, angsmdl, angsmgn, tgleff,
-        tf_hik, tf_nasabah, sahiratm, tglinput, kdaoh, userinput
-        }
+      message: 'Pencarian data sukses',
+      data: sertif,
     });
-    } catch (error) {
-        console.error('Error during input sertif:', error);
-        res.status(500).json({
-            message: 'Terjadi kesalahan pada server',
-            error: error.message
-        });
-    }
-}
-
-module.exports = { InputSertif }
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error,
+    });
+  }
+};
+module.exports = { searchSertifs }

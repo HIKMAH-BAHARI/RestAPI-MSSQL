@@ -38,7 +38,7 @@ app.use('/colls', collsRouters);
 app.use('/customers', customersRouters);
 app.use('/blasts', blastsRouters);
 app.use('/cashratio', crRouter);
-app.use('/inputsertif', sertifRouter);
+app.use('/sertifs', sertifRouter);
 app.post('/upload', upload.single('photo'), (req, res) => {
   res.json({
     message: 'Upload berhasil',
