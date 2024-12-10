@@ -25,6 +25,7 @@ const searchSertifs = (body) => {
         TOFRS.tagmgn,
         TOFRS.tagmdl,
         TOFRS.tagdnd,
+        TOFRS.tagih,
         SUM(TOFRS.tagmgn + TOFRS.tagmdl + TOFRS.tagdnd) AS angsttl,
         TOFRS.os AS sisa_angsuran,
         TOFTABC.sahirrp,
@@ -75,6 +76,7 @@ const searchSertifs = (body) => {
         TOFRS.tagmgn,
         TOFRS.tagmdl,
         TOFRS.tagdnd,
+        TOFRS.tagih,
         TOFRS.os
     ORDER BY
         TOFLMB.tglakad DESC;
