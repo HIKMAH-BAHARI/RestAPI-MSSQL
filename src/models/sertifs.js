@@ -4,7 +4,7 @@ const mssql = require('mssql');
 
 const searchSertifs = (body) => {
   const SQLQuery = `
-    SELECT TOP 1
+    SELECT TOP 3
         TOFLMB.tgleff,
         TOFLMB.nokontrak,
         TOFLMB.acdrop,
@@ -25,7 +25,7 @@ const searchSertifs = (body) => {
         TOFRS.tagmgn,
         TOFRS.tagmdl,
         TOFRS.tagdnd,
-        TOFRS.tagih,
+        TOFRS.tgltagih,
         SUM(TOFRS.tagmgn + TOFRS.tagmdl + TOFRS.tagdnd) AS angsttl,
         TOFRS.os AS sisa_angsuran,
         TOFTABC.sahirrp,
@@ -45,7 +45,6 @@ const searchSertifs = (body) => {
     WHERE
         (TOFLMB.nama LIKE '%' + @nama + '%' OR TOFLMB.nokontrak LIKE @nama)
         AND TOFLMB.stsrec = 'A'
-        AND (TOFRS.tgltagih IS NULL OR TOFRS.tgltagih < @date)
         AND TOFRS.stsbyr = ''
         AND TOFLMB.kdprd in (11, 12, 13, 16, 21, 22, 23, 25)
     GROUP BY
@@ -76,7 +75,7 @@ const searchSertifs = (body) => {
         TOFRS.tagmgn,
         TOFRS.tagmdl,
         TOFRS.tagdnd,
-        TOFRS.tagih,
+        TOFRS.tgltagih,
         TOFRS.os
     ORDER BY
         TOFLMB.tglakad DESC;
