@@ -18,7 +18,7 @@ const searchSertifs = (body) => {
     WHERE
         stsbyr = ''
 )
-SELECT
+SELECT TOP 25
     TOFLMB.tgleff,
     TOFLMB.nokontrak,
     TOFLMB.acdrop,
