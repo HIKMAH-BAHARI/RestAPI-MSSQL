@@ -14,6 +14,7 @@ const middlewareLogRequest = require('./middleware/logs');
 const upload = require('./middleware/multer');
 const crRouter = require('./routes/cashratio');
 const sertifRouter = require('./routes/sertifs');
+const rbbRouter = require('./routes/rbbs')
 
 const app = express();
 const options = {
@@ -39,6 +40,7 @@ app.use('/customers', customersRouters);
 app.use('/blasts', blastsRouters);
 app.use('/cashratio', crRouter);
 app.use('/sertifs', sertifRouter);
+app.use('/rbb', rbbRouter)
 app.post('/upload', upload.single('photo'), (req, res) => {
   res.json({
     message: 'Upload berhasil',
